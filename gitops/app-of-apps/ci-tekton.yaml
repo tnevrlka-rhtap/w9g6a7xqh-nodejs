@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: w9g6a7xqh-nodejs-ci
+  namespace: rhtap-gitops
+  finalizers: ["resources-finalizer.argocd.argoproj.io"]
+spec:
+  project: default
+  source:
+    path: ./components/w9g6a7xqh-nodejs/overlays/ci
+    repoURL: https://github.com/tnevrlka-rhtap/w9g6a7xqh-nodejs-gitops.git
+    targetRevision: main
+  destination:
+    namespace: rhtap-app-ci
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels:
+        argocd.argoproj.io/managed-by: rhtap-gitops
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
